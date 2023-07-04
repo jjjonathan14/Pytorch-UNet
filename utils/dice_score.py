@@ -1,6 +1,6 @@
 import torch
 from torch import Tensor
-
+import torch.nn as nn
 
 def dice_coeff(input: Tensor, target: Tensor, reduce_batch_first: bool = False, epsilon: float = 1e-6):
     # Average of Dice coefficient for all batches, or for a single mask
@@ -26,3 +26,8 @@ def dice_loss(input: Tensor, target: Tensor, multiclass: bool = False):
     # Dice loss (objective to minimize) between 0 and 1
     fn = multiclass_dice_coeff if multiclass else dice_coeff
     return 1 - fn(input, target, reduce_batch_first=True)
+
+def UnetLoss(preds, targets):
+    ce_loss = nn.CrossEntropyLoss()(preds, targets)
+    acc = (torch.max(preds, 1)[1] == targets).float().mean()
+    return ce_loss, acc
