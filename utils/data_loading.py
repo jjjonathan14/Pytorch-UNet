@@ -9,7 +9,7 @@ from torchvision import transforms
 import torch
 from numpy import random
 import imgaug.augmenters as iaa
-from utils.augmentations import add_dust
+# from utils.augmentations import add_dust
 
 
 def load_image(filename):
@@ -53,7 +53,7 @@ class BasicDataset(Dataset):
 
                                     'ColorJitter': transforms.ColorJitter(self.rand_value, self.rand_value, self.rand_value, self.rand_value), # brightness , contrast , saturation , hue
 
-                                    'dust': lambda img: add_dust(img),
+                                    # 'dust': lambda img: add_dust(img),
                                     'AdditiveGaussianNoise': iaa.AdditiveGaussianNoise(scale=(0, 0.2 * 255)),
                                     'AdditiveLaplaceNoise': iaa.AdditiveLaplaceNoise(scale=(0, 0.2 * 255)),
                                     'GaussianBlur':iaa.GaussianBlur(sigma=(0, 10)),
