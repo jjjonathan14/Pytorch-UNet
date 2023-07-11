@@ -68,7 +68,7 @@ class BasicDataset(Dataset):
             raise RuntimeError(f'No input file found in {images_dir}, make sure you put your images there')
         logging.info(f'Creating dataset with {len(self.ids)} examples')
 
-        self.mask_values = [[0, 0, 0], [0,255,0],[0,0,255]]
+        self.mask_values = [[0, 0, 0], [255, 0, 0],[0,255,0],[0,0,255]]
         logging.info(f'Unique mask values: {self.mask_values}')
 
         self.aug_count = 1 + len(self.augment_pixel_list) + len(self.augment_pixel_list_imgaug) + len(self.augment_shape_list)
