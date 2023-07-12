@@ -20,7 +20,7 @@ from unet.unet_vgg_model import UNet_VGG
 
 torch.cuda.empty_cache()
 
-
+dir_path = Path('./data/')
 dir_img = Path('./data/imgs/')
 dir_mask = Path('./data/masks/')
 dir_checkpoint = Path('./checkpoints/')
@@ -44,21 +44,41 @@ def train_model(
         unet_vgg=False
 ):
     # 1. Create dataset
+    seperate = True
     try:
-        dataset = CarvanaDataset(dir_img, dir_mask, img_size)
+        if seperate:
+
+            dataset_train = CarvanaDataset(f'{dir_path}/train/imgs', f'{dir_path}/train/masks', img_size)
+            dataset_validation = CarvanaDataset(f'{dir_path}/validation/imgs', f'{dir_path}/validation/masks', img_size)
+            dataset_test = CarvanaDataset(f'{dir_path}/test/imgs', f'{dir_path}/test/masks', img_size)
+        else:
+            dataset = CarvanaDataset(dir_img, dir_mask, img_size)
+
+
     except (AssertionError, RuntimeError, IndexError):
         dataset = BasicDataset(dir_img, dir_mask, img_size)
 
-    aug_count = dataset.aug_count
-    # 2. Split into train / validation partitions
-    n_val = int(len(dataset) * val_percent)
-    n_train = len(dataset) - n_val
-    train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(0))
+
+    if seperate:
+        loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=True)
+        train_loader = DataLoader(dataset_train, shuffle=True, **loader_args)
+        val_loader = DataLoader(dataset_validation, shuffle=False, drop_last=True, **loader_args)
+        test_loader = DataLoader(dataset_test, shuffle=False, drop_last=True, **loader_args)
+
+
+    else:
+        aug_count = dataset.aug_count
+        # 2. Split into train / validation partitions
+        n_val = int(len(dataset) * val_percent)
+        n_train = len(dataset) - n_val
+        train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(0))
+
+        loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=True)
+        train_loader = DataLoader(train_set, shuffle=True, **loader_args)
+        val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
 
     # 3. Create data loaders
-    loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=True)
-    train_loader = DataLoader(train_set, shuffle=True, **loader_args)
-    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+
 
     logging.info(f'''Starting training:
         Epochs:          {epochs}
