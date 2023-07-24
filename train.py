@@ -51,8 +51,8 @@ def train_model(
 
             dataset_train = CarvanaDataset(f'{dir_path}/train/imgs', f'{dir_path}/train/masks', img_size)
             dataset_validation = CarvanaDataset(f'{dir_path}/validation/imgs', f'{dir_path}/validation/masks', img_size)
-            dataset_test = CarvanaDataset(f'{dir_path}/test/imgs', f'{dir_path}/test/masks', img_size)
-            dataset_train_unlabel = CarvanaDataset(f'{unlabel_dir_path}/train/imgs', f'{unlabel_dir_path}/train/masks', img_size)
+            # dataset_test = CarvanaDataset(f'{dir_path}/test/imgs', f'{dir_path}/test/masks', img_size)
+            # dataset_train_unlabel = CarvanaDataset(f'{unlabel_dir_path}/train/imgs', f'{unlabel_dir_path}/train/masks', img_size)
 
         else:
             dataset = CarvanaDataset(dir_img, dir_mask, img_size)
@@ -66,8 +66,8 @@ def train_model(
         loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=True)
         label_train_loader = DataLoader(dataset_train, shuffle=True, **loader_args)
         label_val_loader = DataLoader(dataset_validation, shuffle=False, drop_last=True, **loader_args)
-        label_test_loader = DataLoader(dataset_test, shuffle=False, drop_last=True, **loader_args)
-        unlabel_train_loader = train_loader = DataLoader(dataset_train_unlabel, shuffle=True, **loader_args)
+        # label_test_loader = DataLoader(dataset_test, shuffle=False, drop_last=True, **loader_args)
+        # unlabel_train_loader = train_loader = DataLoader(dataset_train_unlabel, shuffle=True, **loader_args)
 
     else:
         aug_count = dataset.aug_count
@@ -128,12 +128,14 @@ def train_model(
     for epoch in range(1, epochs + 1):
 
         val_loader = label_val_loader
-        if epoch % 3 != 0:
-            train_loader = label_train_loader
-            total_batch_size = len(train_loader)
-        else:
-            train_loader = unlabel_train_loader
-            total_batch_size = len(train_loader)
+        train_loader = label_train_loader
+        total_batch_size = len(train_loader)
+        # if epoch % 3 != 0:
+        #     train_loader = label_train_loader
+        #     total_batch_size = len(train_loader)
+        # else:
+        #     train_loader = unlabel_train_loader
+        #     total_batch_size = len(train_loader)
 
         selected_batches = sorted(sample(range(0, total_batch_size), int(total_batch_size * aug_percentage)))
         train_loss, train_acc = 0, 0
