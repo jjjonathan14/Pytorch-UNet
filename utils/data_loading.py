@@ -166,8 +166,8 @@ class BasicDataset(Dataset):
         # augment images and masks
         # img_aug, img_augSahpe, mask_aug, mask_augSahpe = self.apply_augmentation(img.copy(), mask.copy())
 
-        # img = self.preprocess(self.mask_values, img, self.img_size, is_mask=False)
-        # mask = self.preprocess(self.mask_values, mask, self.img_size, is_mask=True)
+        img = self.preprocess(self.mask_values, img, self.img_size, is_mask=False)
+        mask = self.preprocess(self.mask_values, mask, self.img_size, is_mask=True)
 
         # auged_img = self.preprocess_aug(img_aug, self.img_size, is_mask=False)
         # auged_mask = self.preprocess_aug(mask_aug, self.img_size, is_mask=True)
