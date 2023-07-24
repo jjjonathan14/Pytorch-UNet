@@ -164,24 +164,24 @@ class BasicDataset(Dataset):
             f'Image and mask {name} should be the same size, but are {img.size} and {mask.size}'
 
         # augment images and masks
-        img_aug, img_augSahpe, mask_aug, mask_augSahpe = self.apply_augmentation(img.copy(), mask.copy())
+        # img_aug, img_augSahpe, mask_aug, mask_augSahpe = self.apply_augmentation(img.copy(), mask.copy())
 
-        img = self.preprocess(self.mask_values, img, self.img_size, is_mask=False)
-        mask = self.preprocess(self.mask_values, mask, self.img_size, is_mask=True)
+        # img = self.preprocess(self.mask_values, img, self.img_size, is_mask=False)
+        # mask = self.preprocess(self.mask_values, mask, self.img_size, is_mask=True)
 
-        auged_img = self.preprocess_aug(img_aug, self.img_size, is_mask=False)
-        auged_mask = self.preprocess_aug(mask_aug, self.img_size, is_mask=True)
+        # auged_img = self.preprocess_aug(img_aug, self.img_size, is_mask=False)
+        # auged_mask = self.preprocess_aug(mask_aug, self.img_size, is_mask=True)
 
-        auged_img_shape = self.preprocess_aug(img_augSahpe, self.img_size, is_mask=False)
-        auged_mask_shape = self.preprocess_aug(mask_augSahpe, self.img_size, is_mask=True)
+        # auged_img_shape = self.preprocess_aug(img_augSahpe, self.img_size, is_mask=False)
+        # auged_mask_shape = self.preprocess_aug(mask_augSahpe, self.img_size, is_mask=True)
 
         return {
                 'image': torch.as_tensor(img.copy()).float().contiguous(),
                 'mask': torch.as_tensor(mask.copy()).long().contiguous(),
-                'auged_shape_image': [torch.as_tensor(x.copy()).float().contiguous() for x in auged_img_shape],
-                'auged_shape_mask': [torch.as_tensor(x.copy()).long().contiguous() for x in auged_mask_shape],
-                'auged_image': [torch.as_tensor(x.copy()).float().contiguous() for x in auged_img],
-                'auged_mask': [torch.as_tensor(x.copy()).long().contiguous() for x in auged_mask],
+                # 'auged_shape_image': [torch.as_tensor(x.copy()).float().contiguous() for x in auged_img_shape],
+                # 'auged_shape_mask': [torch.as_tensor(x.copy()).long().contiguous() for x in auged_mask_shape],
+                # 'auged_image': [torch.as_tensor(x.copy()).float().contiguous() for x in auged_img],
+                # 'auged_mask': [torch.as_tensor(x.copy()).long().contiguous() for x in auged_mask],
             }
 
         # return torch.as_tensor(img.copy()).float().contiguous(), torch.as_tensor(mask.copy()).long().contiguous()
