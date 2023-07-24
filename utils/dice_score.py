@@ -29,5 +29,6 @@ def dice_loss(input: Tensor, target: Tensor, multiclass: bool = False):
 
 def UnetLoss(preds, targets):
     ce_loss = nn.CrossEntropyLoss()(preds, targets)
+    print(torch.max(preds, 1)[1] == targets)
     acc = (torch.max(preds, 1)[1] == targets).float().mean()
     return ce_loss, acc
