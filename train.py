@@ -63,6 +63,8 @@ def train_model(
 
 
     if seperate:
+        n_val = len(dataset_validation)
+        n_train = len(dataset_train)
         loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=True)
         label_train_loader = DataLoader(dataset_train, shuffle=True, **loader_args)
         label_val_loader = DataLoader(dataset_validation, shuffle=False, drop_last=True, **loader_args)
