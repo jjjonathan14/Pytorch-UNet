@@ -70,7 +70,7 @@ def train_model(
         label_val_loader = DataLoader(dataset_validation, shuffle=False, drop_last=True, **loader_args)
         # label_test_loader = DataLoader(dataset_test, shuffle=False, drop_last=True, **loader_args)
         # unlabel_train_loader = train_loader = DataLoader(dataset_train_unlabel, shuffle=True, **loader_args)
-
+        total_batch_size = len(label_train_loader)
     else:
         aug_count = dataset.aug_count
         # 2. Split into train / validation partitions
@@ -81,7 +81,7 @@ def train_model(
         loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=True)
         train_loader = DataLoader(train_set, shuffle=True, **loader_args)
         val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
-
+        total_batch_size = len(train_loader)
     # 3. Create data loaders
 
 
@@ -97,7 +97,7 @@ def train_model(
         Mixed Precision: {amp}
     ''')
 
-    total_batch_size = len(train_loader)
+    
     if unet_vgg:
 
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
