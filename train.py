@@ -53,7 +53,7 @@ def train_model(
             dataset_validation = CarvanaDataset(f'{dir_path}/validation/imgs', f'{dir_path}/validation/masks', img_size)
             # dataset_test = CarvanaDataset(f'{dir_path}/test/imgs', f'{dir_path}/test/masks', img_size)
             # dataset_train_unlabel = CarvanaDataset(f'{unlabel_dir_path}/train/imgs', f'{unlabel_dir_path}/train/masks', img_size)
-
+            dataset = dataset_train
         else:
             dataset = CarvanaDataset(dir_img, dir_mask, img_size)
 
