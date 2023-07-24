@@ -218,7 +218,6 @@ def train_model(
                 val_loss1, val_acc1 = criterion(masks_pred, true_masks)
                 val_loss += val_loss1.item()
                 val_acc += val_acc1.item()
-                print('check', val_acc1.item())
 
             wandb.log(
                 {
