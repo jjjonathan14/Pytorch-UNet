@@ -228,7 +228,7 @@ def train_model(
                     'val_acc': val_acc / len(val_loader)
                 }
             )
-            save_table(f'{epoch}', val_loader, model, device)
+            # save_table(f'{epoch}', val_loader, model, device)
 
         else:
             histograms = {}
