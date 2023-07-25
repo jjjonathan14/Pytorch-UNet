@@ -70,24 +70,23 @@ def mask_to_image(mask: np.ndarray, mask_values, img, mask_overlay):
 
 def get_args():
     parser = argparse.ArgumentParser(description='Predict masks from input images')
-    parser.add_argument('--model', '-m', default='MODEL.pth', metavar='FILE',
+    parser.add_argument('--model', '-m', default='/kaggle/input/unet-1-class/unet_1_class.pth', metavar='FILE',
                         help='Specify the file in which the model is stored')
     parser.add_argument('--input', '-i', metavar='INPUT', nargs='+', help='Filenames of input images or the directory',
-                        required=True)
+                        required=False, default='/kaggle/input/hubmap-hacking-the-human-vasculature/test')
     parser.add_argument('--output', '-o', metavar='OUTPUT', nargs='+', default=None,
                         help='Filenames of output images or directory')
     parser.add_argument('--viz', '-v', action='store_true',
                         help='Visualize the images as they are processed')
     parser.add_argument('--no-save', '-n', action='store_true', help='Do not save the output masks')
-    parser.add_argument('--mask-threshold', '-t', type=float, default=0.5,
+    parser.add_argument('--mask-threshold', '-t', type=float, default=0.2,
                         help='Minimum probability value to consider a mask pixel white')
-    parser.add_argument('--imsize', '-s', nargs='+', type=int, help='resize w and h of the images')
+    parser.add_argument('--imsize', '-s', nargs='+', type=int, help='resize w and h of the images', default=[512, 512])
     parser.add_argument('--dropout', action='store_true', default=False, help='Use drop out layers')
     parser.add_argument('--bilinear', action='store_true', default=False, help='Use bilinear upsampling')
     parser.add_argument('--classes', '-c', type=int, default=2, help='Number of classes')
     parser.add_argument('--overlay', '-mo', action='store_true', default=False, help='overlay the mask on top of image')
-    parser.add_argument('--unet-vgg', action='store_true', default=False, help='Load Unet VGG model architecture')
-
+    parser.add_argument('--unet-vgg', action='store_true', default=True, help='Load Unet VGG model architecture')
 
     return parser.parse_args()
 
