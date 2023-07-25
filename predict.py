@@ -10,6 +10,7 @@ from unet import UNet
 from unet.unet_vgg_model import UNet_VGG
 from utils.utils import plot_img_and_mask
 from unet.unet_vgg_model import UNet_VGG
+import cv2 as cv
 
 def predict_img(net,
                 full_img,
@@ -64,7 +65,7 @@ def mask_to_image(mask: np.ndarray, mask_values, img, mask_overlay):
         for i, v in enumerate(mask_values):
             out[mask == i] = v
         img = Image.fromarray(out)
-    return img
+    return img, out
 
 
 def get_args():
@@ -121,55 +122,73 @@ if __name__ == '__main__':
 
     logging.info('Model loaded!')
 
-    if os.path.isdir(in_files[0]):
-        for im_file in os.listdir(in_files[0]):
-            if im_file.endswith('.jpg') or im_file.endswith('.jpeg') or im_file.endswith('.png'):
-                logging.info(f'Predicting image {im_file} ...')
-                img_in = Image.open(f'{in_files[0]}{im_file}')
-                mask_out = predict_img(net=net,
-                                       full_img=img_in,
-                                       img_size=args.imsize,
-                                       out_threshold=args.mask_threshold,
-                                       device=device)
 
-                if not args.no_save:
-                    if not args.output:
-                        if not os.path.exists('predictions/'):
-                            os.makedirs('predictions/')
-                        out_dir = 'predictions/'
-                    else:
-                        if not os.path.isdir(args.output[0]):
-                            os.makedirs(args.output[0])
-                        out_dir = args.output[0]
+    for img in os.listdir(args.input):
+        img_open = cv.imread(f'{args.input}/{img}')
+        mask_out = predict_img(net=net,
+                               full_img=img_open,
+                               img_size=args.imsize,
+                               out_threshold=args.mask_threshold,
+                               device=device)
+        result, out = mask_to_image(mask_out, mask_values, img_open, mask_overlay=False)
+        result.save('test.jpg')
+        gray = cv.cvtColor(out, cv.COLOR_BGR2GRAY)
+        edged = cv.Canny(gray, 30, 255)
+        contours, hierarchy = cv.findContours(edged,
+                                               cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
 
-                    out_filename = f'{out_dir}{".".join(im_file.split(".")[:-1])}_predicted.jpg'
-                    img_in = np.asarray(img_in)
-                    result = mask_to_image(mask_out, mask_values, img_in, mask_overlay=args.overlay)
-                    result.save(out_filename)
-                    logging.info(f'Mask saved to {out_filename}')
 
-                if args.viz:
-                    logging.info(f'Visualizing results for image {im_file}, close to continue...')
-                    plot_img_and_mask(img_in, mask_out)
-
-    else:
-        for i, filename in enumerate(in_files):
-            logging.info(f'Predicting image {filename} ...')
-            img_in = Image.open(filename)
-
-            mask_out = predict_img(net=net,
-                                   full_img=img_in,
-                                   img_size=args.imsize,
-                                   out_threshold=args.mask_threshold,
-                                   device=device)
-
-            if not args.no_save:
-                out_filename = out_files[i]
-                img_in = np.asarray(img_in)
-                result = mask_to_image(mask_out, mask_values, img_in, mask_overlay=args.overlay)
-                result.save(out_filename)
-                logging.info(f'Mask saved to {out_filename}')
-
-            if args.viz:
-                logging.info(f'Visualizing results for image {filename}, close to continue...')
-                plot_img_and_mask(img_in, mask_out)
+        print(contours)
+    #
+    # if os.path.isdir(in_files[0]):
+    #     for im_file in os.listdir(in_files[0]):
+    #         if im_file.endswith('.jpg') or im_file.endswith('.jpeg') or im_file.endswith('.png'):
+    #             logging.info(f'Predicting image {im_file} ...')
+    #             img_in = Image.open(f'{in_files[0]}{im_file}')
+    #             mask_out = predict_img(net=net,
+    #                                    full_img=img_in,
+    #                                    img_size=args.imsize,
+    #                                    out_threshold=args.mask_threshold,
+    #                                    device=device)
+    #
+    #             if not args.no_save:
+    #                 if not args.output:
+    #                     if not os.path.exists('predictions/'):
+    #                         os.makedirs('predictions/')
+    #                     out_dir = 'predictions/'
+    #                 else:
+    #                     if not os.path.isdir(args.output[0]):
+    #                         os.makedirs(args.output[0])
+    #                     out_dir = args.output[0]
+    #
+    #                 out_filename = f'{out_dir}{".".join(im_file.split(".")[:-1])}_predicted.jpg'
+    #                 img_in = np.asarray(img_in)
+    #                 result = mask_to_image(mask_out, mask_values, img_in, mask_overlay=args.overlay)
+    #                 result.save(out_filename)
+    #                 logging.info(f'Mask saved to {out_filename}')
+    #
+    #             if args.viz:
+    #                 logging.info(f'Visualizing results for image {im_file}, close to continue...')
+    #                 plot_img_and_mask(img_in, mask_out)
+    #
+    # else:
+    #     for i, filename in enumerate(in_files):
+    #         logging.info(f'Predicting image {filename} ...')
+    #         img_in = Image.open(filename)
+    #
+    #         mask_out = predict_img(net=net,
+    #                                full_img=img_in,
+    #                                img_size=args.imsize,
+    #                                out_threshold=args.mask_threshold,
+    #                                device=device)
+    #
+    #         if not args.no_save:
+    #             out_filename = out_files[i]
+    #             img_in = np.asarray(img_in)
+    #             result = mask_to_image(mask_out, mask_values, img_in, mask_overlay=args.overlay)
+    #             result.save(out_filename)
+    #             logging.info(f'Mask saved to {out_filename}')
+    #
+    #         if args.viz:
+    #             logging.info(f'Visualizing results for image {filename}, close to continue...')
+    #             plot_img_and_mask(img_in, mask_out)
