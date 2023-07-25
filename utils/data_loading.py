@@ -82,7 +82,7 @@ class BasicDataset(Dataset):
     def preprocess(mask_values, pil_img, img_size, is_mask):
         # w, h = pil_img.size
         newW, newH = img_size
-        # pil_img = pil_img.resize((newW, newH), resample=Image.ANTIALIAS if is_mask else Image.BICUBIC)
+        pil_img = pil_img.resize((newW, newH), resample=Image.ANTIALIAS if is_mask else Image.BICUBIC)
         img = np.asarray(pil_img)
 
         if is_mask:
