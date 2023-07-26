@@ -10,6 +10,7 @@ class UNet_VGG(nn.Module):
 
         self.checkpoints = torch.load('/kaggle/input/vgg-pretrained/vgg16_bn-6c64b313.pth')
         self.model = vgg16_bn(pretrained=True).load_state_dict(self.checkpoints, map_location='cpu')
+        print(self.model)
         self.encoder = self.model.features
         # self.encoder = vgg16_bn(pretrained=False).features
         self.block1 = nn.Sequential(*self.encoder[:6])
