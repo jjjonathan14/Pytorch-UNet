@@ -7,8 +7,8 @@ from .unet_parts import *
 class UNet_VGG(nn.Module):
     def __init__(self, pretrained=True, out_channels=12):
         super().__init__()
-
-        self.encoder = vgg16_bn(pretrained=pretrained).features
+        self.encoder = torch.load('/kaggle/input/vgg-pretrained/vgg16_bn-6c64b313.pth').features
+        # self.encoder = vgg16_bn(pretrained=pretrained).features
         self.block1 = nn.Sequential(*self.encoder[:6])
         self.block2 = nn.Sequential(*self.encoder[6:13])
         self.block3 = nn.Sequential(*self.encoder[13:20])
