@@ -9,7 +9,7 @@ class UNet_VGG(nn.Module):
         super().__init__()
 
         # self.checkpoints = torch.load('/kaggle/input/vgg-pretrained/vgg16_bn-6c64b313.pth')
-        self.model = vgg16_bn()
+        self.model = vgg16_bn(pretrained=True)
         self.checkpoints = torch.load('/kaggle/input/vgg-pretrained/vgg16_bn-6c64b313.pth')
         if 'model' in self.checkpoints:
             self.model.load_state_dict(self.checkpoints['model'],strict=False)
